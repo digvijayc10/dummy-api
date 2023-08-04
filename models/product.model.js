@@ -13,6 +13,10 @@ const ProductSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  image_publicid: {
+    type: String,
+    required: true,
+  },
   price: {
     type: Number,
     require: true,
@@ -23,4 +27,4 @@ const ProductSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Product", ProductSchema);
+module.exports = mongoose.model("dummy-product", ProductSchema);

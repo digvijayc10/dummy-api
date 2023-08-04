@@ -4,8 +4,8 @@ const cors = require("cors");
 const morgan = require("morgan");
 require("dotenv").config();
 
-// routes
 const productRoutes = require("./routes/products.route");
+const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -15,8 +15,7 @@ app.use(cors());
 app.use(morgan("dev"));
 
 app.use("/api/v1", productRoutes);
-
-// 404 route handler
+app.use(errorHandler);
 app.use((req, res) => {
   res.status(404).json({ status: 404, message: "Route not found" });
 });

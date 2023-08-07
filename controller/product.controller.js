@@ -5,11 +5,32 @@ const AppError = require("../utils/appError");
 // GET All products
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find();
+    const page = req.query?.page || 1;
+    const size = req.query?.size || 20;
+    let search = "";
+    if (req.query?.search) {
+      search = req.query.search;
+    }
+
+    const totalResults = await Product.count({
+      title: { $regex: search, $options: "i" },
+    });
+    const products = await Product.find({
+      title: { $regex: search, $options: "i" },
+    })
+      .sort({
+        updatedAt: -1,
+        createdAt: -1,
+      })
+      .skip((page - 1) * size)
+      .limit(size);
     res.json({
       status: 200,
       data: {
         products,
+        total_results: totalResults,
+        page: +page,
+        size: +size,
       },
     });
   } catch (error) {
@@ -41,6 +62,8 @@ exports.addProduct = async (req, res, next) => {
       category,
       image: result.secure_url,
       image_publicid: result.public_id,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     });
     await product.save();
     res
@@ -102,6 +125,7 @@ exports.updateProduct = async (req, res, next) => {
     product.description = description;
     product.price = price;
     product.category = category;
+    product.updatedAt = new Date().toISOString();
 
     await product.save();
 

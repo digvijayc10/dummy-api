@@ -25,6 +25,13 @@ const ProductSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  createdAt: {
+    type: Date,
+    require: true,
+  },
+  updatedAt: {
+    type: Date,
+  },
 });
 
 module.exports = mongoose.model("dummy-product", ProductSchema);
